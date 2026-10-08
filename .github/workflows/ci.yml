@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  format:
+    name: Format and lint
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install the locked formatter
+        run: python3 -m pip install -r requirements-dev.txt
+      - name: Check formatting
+        run: python3 -m ruff format --check .
+      - name: Lint
+        run: python3 -m ruff check .
+
+  test:
+    name: Test (Python ${{ matrix.python }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        include:
+          - os: macos-14
+            python: "3.12"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Unit tests
+        run: python3 -m unittest discover -s tests -v
+      - name: README quick start
+        run: python3 -m reportgate examples/reports --repo examples/pastebox
+      - name: Missing directory exits 2
+        shell: bash
+        run: |
+          set +e
+          python3 -m reportgate does-not-exist
+          code=$?
+          set -e
+          test "$code" -eq 2
+      - name: Install and run the command
+        run: |
+          python3 -m pip install .
+          reportgate --version
+          reportgate examples/reports --repo examples/pastebox --out "$RUNNER_TEMP/triage"

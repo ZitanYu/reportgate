@@ -77,10 +77,17 @@ def _utf8_stdout() -> None:
 def main(argv: Optional[List[str]] = None) -> int:
     """Run the command. Returns the exit code."""
     try:
-        return _run(argv)
+        try:
+            code = _run(argv)
+        except SystemExit as exc:  # argparse exits by itself for --help, --version, bad usage
+            code = 0 if exc.code is None else exc.code
+        # Flush here, inside the try: output can sit in the buffer until exit (Python 3.14
+        # buffers up to 128 KiB), and a broken pipe found during shutdown exits with 120.
+        sys.stdout.flush()
+        return code
     except BrokenPipeError:
         # The output was piped into something that stopped reading, such as `head`.
-        # The run itself succeeded; silence the interpreter's final flush and exit.
+        # The run itself succeeded; send the rest to /dev/null so exit stays quiet.
         devnull = os.open(os.devnull, os.O_WRONLY)
         os.dup2(devnull, sys.stdout.fileno())
         return EXIT_OK

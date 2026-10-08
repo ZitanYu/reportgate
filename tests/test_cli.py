@@ -3,6 +3,7 @@
 import contextlib
 import io
 import json
+import os
 import subprocess
 import sys
 import unittest
@@ -68,16 +69,25 @@ class ExitCodes(TempDirTestCase):
         self.assertIn("worth human review", ok.stdout.decode("utf-8"))
 
     def test_closed_pipe_is_not_an_error(self):
-        process = subprocess.Popen(
-            [sys.executable, "-m", "reportgate", "examples/reports", "--repo", "examples/pastebox"],
-            cwd=ROOT,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-        process.stdout.close()  # like `reportgate ... | head -1`
-        _out, err = process.communicate()
-        self.assertEqual(process.returncode, 0)
-        self.assertNotIn(b"Traceback", err)
+        # Output must be buffered, as it normally is, or the failure this guards against
+        # (exit code 120 from a broken pipe found at shutdown) cannot happen.
+        env = {k: v for k, v in os.environ.items() if k != "PYTHONUNBUFFERED"}
+        long_output = ["examples/reports", "--repo", "examples/pastebox"]
+        short_output = long_output + ["--out", str(self.tmp / "out")]
+        for args in (long_output, short_output, ["--version"]):
+            with self.subTest(args=args):
+                process = subprocess.Popen(
+                    [sys.executable, "-m", "reportgate", *args],
+                    cwd=ROOT,
+                    env=env,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+                process.stdout.close()  # like `reportgate ... | head -1`
+                _out, err = process.communicate()
+                self.assertEqual(process.returncode, 0, err.decode("utf-8", "replace"))
+                self.assertNotIn(b"Traceback", err)
+                self.assertNotIn(b"Exception ignored", err)
 
 
 class Outputs(TempDirTestCase):

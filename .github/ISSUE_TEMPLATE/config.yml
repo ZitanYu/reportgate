@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security problem in reportgate itself
+    url: https://github.com/ZitanYu/reportgate/security/advisories/new
+    about: Report privately to Zitan Yu. Do not open a public issue before a fix is released.
+  - name: Good first issues
+    url: https://github.com/ZitanYu/reportgate/blob/main/docs/good-first-issues.md
+    about: Five scoped starter tasks with acceptance criteria.

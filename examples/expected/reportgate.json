@@ -1,0 +1,427 @@
+{
+  "schema_version": 1,
+  "tool": {
+    "name": "reportgate",
+    "version": "0.1.0"
+  },
+  "notice": {
+    "en": "This is triage, not confirmation. reportgate compared the reports with each other and, when a checkout was given, with the code; it did not run, exploit, or confirm anything.",
+    "zh": "这是分诊，不是确认。reportgate 只是把报告相互比较，并在提供了代码检出时与代码对照；它没有运行、利用或确认任何内容。"
+  },
+  "reports_dir": "examples/reports",
+  "tree": {
+    "checked": true,
+    "path": "examples/pastebox"
+  },
+  "summary": {
+    "total": 6,
+    "by_verdict": {
+      "duplicate": 1,
+      "not in the current tree": 1,
+      "missing location": 1,
+      "missing minimal reproduction": 1,
+      "worth human review": 1,
+      "needs human judgment": 1
+    }
+  },
+  "results": [
+    {
+      "id": "01-upload-path-traversal.md",
+      "format": "markdown",
+      "title": "Path traversal in upload storage",
+      "severity": "high",
+      "cwe": [
+        "CWE-22"
+      ],
+      "verdict": "worth human review",
+      "verdict_code": "worth_human_review",
+      "verdict_zh": "值得人工审查",
+      "reasons": [
+        {
+          "code": "location_verified",
+          "en": "`pastebox/storage.py` exists, line 16 is in range, and the quoted code matches.",
+          "zh": "`pastebox/storage.py` 存在，第 16 行在范围内，引用的代码一致。"
+        },
+        {
+          "code": "reproduction_present",
+          "en": "Reproduction score 3/3: a code block plus steps or a payload.",
+          "zh": "复现评分 3/3：有代码块，并有步骤或载荷。"
+        }
+      ],
+      "evidence": {
+        "path": "pastebox/storage.py",
+        "path_exists": true,
+        "path_escapes_repo": false,
+        "line": 16,
+        "line_in_range": true,
+        "file_lines": 27,
+        "snippet_quoted": true,
+        "snippet_match": true,
+        "snippet_found_in": [],
+        "reproduction_score": 3,
+        "reproduction_label": "a code block plus steps or a payload",
+        "reproduction_signals": {
+          "mention": true,
+          "steps": true,
+          "code_block": true,
+          "payload": true
+        },
+        "entry_point": "The `X-Filename` request header is passed straight to `save_upload()`, so the filename is attacker-controlled.",
+        "candidates": [
+          {
+            "path": "pastebox/storage.py",
+            "line": 16,
+            "origin": "text",
+            "escapes_repo": false,
+            "exists": true
+          }
+        ],
+        "clustered_with": [
+          "02-crafted-filename-write.json"
+        ],
+        "duplicate_of": null,
+        "cluster": {
+          "id": "C1",
+          "primary": "01-upload-path-traversal.md",
+          "members": [
+            "01-upload-path-traversal.md",
+            "02-crafted-filename-write.json"
+          ],
+          "links": [
+            {
+              "between": [
+                "01-upload-path-traversal.md",
+                "02-crafted-filename-write.json"
+              ],
+              "rule": "same file and same CWE",
+              "shared_files": [
+                "pastebox/storage.py"
+              ],
+              "shared_cwe": [
+                "CWE-22"
+              ],
+              "text_overlap": 0.06
+            }
+          ]
+        }
+      },
+      "reply": {
+        "en": "Hi,\n\nThank you for reporting \"Path traversal in upload storage\" to pastebox.\n\nWe ran an initial triage. The report points to `pastebox/storage.py` (line 16), which exists in the current code. The code you quoted matches that file, and the report includes a reproduction. A maintainer will now review it by hand.\n\nThis is triage, not confirmation: we have not confirmed whether the issue is exploitable. Please keep the details private until a fix is released; we will coordinate disclosure and credit with you.\n\n— The maintainers",
+        "zh": "你好，\n\n感谢你向 pastebox 报告「Path traversal in upload storage」。\n\n我们做了初步分诊：报告指向 `pastebox/storage.py` 第 16 行，该位置在当前代码中存在，你引用的代码也与之一致，并且报告附带了复现。接下来会由维护者人工审查。\n\n这是分诊，不是确认：我们尚未确认该问题是否可被利用。在修复发布之前，请不要公开细节；披露时间和致谢方式我们会与你商定。\n\n—— 维护者"
+      },
+      "patch_note": "Patch note (draft) for: Path traversal in upload storage\nReport: 01-upload-path-traversal.md\nAlso covers duplicates: 02-crafted-filename-write.json\n\n- Exploitability: not confirmed. This note comes from triage; confirm the issue by hand before changing code.\n- Where untrusted input enters: as described by the reporter, unverified: \"The `X-Filename` request header is passed straight to `save_upload()`, so the filename is attacker-controlled.\"\n- Path to fix: `pastebox/storage.py` (line 16)\n- Weakness: CWE-22 (as reported)\n- Release: publish the fix as a separate security release, not bundled with unrelated changes, and credit the reporter as agreed.",
+      "patch_note_reason": null
+    },
+    {
+      "id": "02-crafted-filename-write.json",
+      "format": "json",
+      "title": "Arbitrary file write via crafted X-Filename",
+      "severity": "critical",
+      "cwe": [
+        "CWE-22"
+      ],
+      "verdict": "duplicate",
+      "verdict_code": "duplicate",
+      "verdict_zh": "重复",
+      "reasons": [
+        {
+          "code": "duplicate_of",
+          "en": "Clustered with `01-upload-path-traversal.md` (same file and same CWE); `01-upload-path-traversal.md` is the primary report.",
+          "zh": "与 `01-upload-path-traversal.md` 归为一组（同一文件且同一 CWE）；主报告是 `01-upload-path-traversal.md`。"
+        }
+      ],
+      "evidence": {
+        "path": "pastebox/storage.py",
+        "path_exists": true,
+        "path_escapes_repo": false,
+        "line": null,
+        "line_in_range": null,
+        "file_lines": 27,
+        "snippet_quoted": false,
+        "snippet_match": null,
+        "snippet_found_in": [],
+        "reproduction_score": 3,
+        "reproduction_label": "a code block plus steps or a payload",
+        "reproduction_signals": {
+          "mention": true,
+          "steps": false,
+          "code_block": true,
+          "payload": true
+        },
+        "entry_point": "Sending a paste with an X-Filename header such as ../owned.txt lets the client choose where the file lands on the server.",
+        "candidates": [
+          {
+            "path": "pastebox/storage.py",
+            "line": null,
+            "origin": "declared",
+            "escapes_repo": false,
+            "exists": true
+          },
+          {
+            "path": "../owned.txt",
+            "line": null,
+            "origin": "text",
+            "escapes_repo": true,
+            "exists": null
+          }
+        ],
+        "clustered_with": [
+          "01-upload-path-traversal.md"
+        ],
+        "duplicate_of": "01-upload-path-traversal.md",
+        "cluster": {
+          "id": "C1",
+          "primary": "01-upload-path-traversal.md",
+          "members": [
+            "01-upload-path-traversal.md",
+            "02-crafted-filename-write.json"
+          ],
+          "links": [
+            {
+              "between": [
+                "01-upload-path-traversal.md",
+                "02-crafted-filename-write.json"
+              ],
+              "rule": "same file and same CWE",
+              "shared_files": [
+                "pastebox/storage.py"
+              ],
+              "shared_cwe": [
+                "CWE-22"
+              ],
+              "text_overlap": 0.06
+            }
+          ]
+        }
+      },
+      "reply": {
+        "en": "Hi,\n\nThank you for reporting \"Arbitrary file write via crafted X-Filename\" to pastebox.\n\nThis appears to describe the same issue as a report we have already received, so we will track the two together rather than separately. If you have details the other report may not cover, such as another entry point, another affected version, or a smaller reproduction, please reply with them and we will add them.\n\nThis is an initial triage, not a confirmation or a rejection of the issue. Please keep the details private for now.\n\n— The maintainers",
+        "zh": "你好，\n\n感谢你向 pastebox 报告「Arbitrary file write via crafted X-Filename」。\n\n这份报告描述的问题似乎与我们已经收到的另一份报告相同，因此我们会把两者合并跟踪，而不是分开处理。如果你掌握对方可能没有提到的细节，例如其他入口、其他受影响的版本，或更小的复现，请回复告诉我们，我们会补充进去。\n\n这只是初步分诊，既不是确认，也不是否定。目前请不要公开细节。\n\n—— 维护者"
+      },
+      "patch_note": null,
+      "patch_note_reason": "No patch note: this report duplicates 01-upload-path-traversal.md; any patch note belongs to that report."
+    },
+    {
+      "id": "03-title-html-injection.md",
+      "format": "markdown",
+      "title": "HTML injection in paste titles",
+      "severity": "medium",
+      "cwe": [
+        "CWE-79"
+      ],
+      "verdict": "not in the current tree",
+      "verdict_code": "not_in_current_tree",
+      "verdict_zh": "不在当前代码树中",
+      "reasons": [
+        {
+          "code": "path_missing",
+          "en": "`pastebox/templates.py` does not exist in the checkout.",
+          "zh": "检出中不存在 `pastebox/templates.py`。"
+        },
+        {
+          "code": "snippet_not_found",
+          "en": "The quoted code does not appear anywhere in the checkout.",
+          "zh": "引用的代码在检出中的任何位置都找不到。"
+        }
+      ],
+      "evidence": {
+        "path": "pastebox/templates.py",
+        "path_exists": false,
+        "path_escapes_repo": false,
+        "line": 22,
+        "line_in_range": null,
+        "file_lines": null,
+        "snippet_quoted": true,
+        "snippet_match": null,
+        "snippet_found_in": [],
+        "reproduction_score": 3,
+        "reproduction_label": "a code block plus steps or a payload",
+        "reproduction_signals": {
+          "mention": true,
+          "steps": true,
+          "code_block": true,
+          "payload": false
+        },
+        "entry_point": null,
+        "candidates": [
+          {
+            "path": "pastebox/templates.py",
+            "line": 22,
+            "origin": "text",
+            "escapes_repo": false,
+            "exists": false
+          }
+        ],
+        "clustered_with": [],
+        "duplicate_of": null,
+        "cluster": null
+      },
+      "reply": {
+        "en": "Hi,\n\nThank you for reporting \"HTML injection in paste titles\" to pastebox.\n\nWe compared the report with the current source tree and could not find what it describes: `pastebox/templates.py` does not exist in the current tree, and the code you quoted does not appear anywhere else. The code may have changed, moved, or been fixed since the version you tested.\n\nCould you tell us which version or commit you tested, and whether the issue still reproduces on the latest code? If it does, please point us to the current file and line.\n\nThis is an initial triage, not a confirmation or a rejection of the issue.\n\n— The maintainers",
+        "zh": "你好，\n\n感谢你向 pastebox 报告「HTML injection in paste titles」。\n\n我们把报告与当前源代码树做了对照，没有找到报告所描述的内容：当前代码树中不存在 `pastebox/templates.py`，你引用的代码也没有出现在其他任何位置。自你测试的版本以来，相关代码可能已被修改、移动或修复。\n\n能否告诉我们你测试的是哪个版本或哪个提交，以及在最新代码上是否仍能复现？如果仍能复现，请告诉我们当前对应的文件和行号。\n\n这只是初步分诊，既不是确认，也不是否定。\n\n—— 维护者"
+      },
+      "patch_note": null,
+      "patch_note_reason": "No patch note: the reported code is not in the current tree, so there is nothing here to fix yet."
+    },
+    {
+      "id": "04-large-paste.txt",
+      "format": "text",
+      "title": "Possible denial of service in pastebox/server.py",
+      "severity": null,
+      "cwe": [],
+      "verdict": "missing minimal reproduction",
+      "verdict_code": "missing_minimal_reproduction",
+      "verdict_zh": "缺少最小复现",
+      "reasons": [
+        {
+          "code": "no_reproduction",
+          "en": "Reproduction score 0/3: the report contains no reproduction.",
+          "zh": "复现评分 0/3：报告中没有任何复现。"
+        }
+      ],
+      "evidence": {
+        "path": "pastebox/server.py",
+        "path_exists": true,
+        "path_escapes_repo": false,
+        "line": null,
+        "line_in_range": null,
+        "file_lines": 24,
+        "snippet_quoted": false,
+        "snippet_match": null,
+        "snippet_found_in": [],
+        "reproduction_score": 0,
+        "reproduction_label": "nothing",
+        "reproduction_signals": {
+          "mention": false,
+          "steps": false,
+          "code_block": false,
+          "payload": false
+        },
+        "entry_point": "I think a very large paste could make the server use too much memory, since the whole request body is read at once in pastebox/server.py.",
+        "candidates": [
+          {
+            "path": "pastebox/server.py",
+            "line": null,
+            "origin": "text",
+            "escapes_repo": false,
+            "exists": true
+          }
+        ],
+        "clustered_with": [],
+        "duplicate_of": null,
+        "cluster": null
+      },
+      "reply": {
+        "en": "Hi,\n\nThank you for reporting \"Possible denial of service in pastebox/server.py\" to pastebox.\n\nWe found the location the report refers to (`pastebox/server.py`), but the report does not include a minimal reproduction. Before a maintainer can review it, could you reply with:\n\n- the exact steps that trigger the behaviour;\n- the smallest input, request, or file that triggers it;\n- what you expected to happen and what happened instead;\n- the version or commit you tested.\n\nThis is an initial triage, not a confirmation or a rejection of the issue.\n\n— The maintainers",
+        "zh": "你好，\n\n感谢你向 pastebox 报告「Possible denial of service in pastebox/server.py」。\n\n我们找到了报告所指的位置（`pastebox/server.py`），但报告没有附上最小复现。在维护者审查之前，能否回复以下信息：\n\n- 触发该行为的确切步骤；\n- 能触发它的最小输入、请求或文件；\n- 你预期的结果，以及实际发生的结果；\n- 你测试的版本或提交。\n\n这只是初步分诊，既不是确认，也不是否定。\n\n—— 维护者"
+      },
+      "patch_note": null,
+      "patch_note_reason": "No patch note: without a minimal reproduction there is no basis for a fix yet."
+    },
+    {
+      "id": "05-urgent-no-details.md",
+      "format": "markdown",
+      "title": "URGENT: critical security vulnerability in your website",
+      "severity": null,
+      "cwe": [],
+      "verdict": "missing location",
+      "verdict_code": "missing_location",
+      "verdict_zh": "缺少位置",
+      "reasons": [
+        {
+          "code": "no_path",
+          "en": "The report names no file path.",
+          "zh": "报告没有给出任何文件路径。"
+        }
+      ],
+      "evidence": {
+        "path": null,
+        "path_exists": null,
+        "path_escapes_repo": false,
+        "line": null,
+        "line_in_range": null,
+        "file_lines": null,
+        "snippet_quoted": false,
+        "snippet_match": null,
+        "snippet_found_in": [],
+        "reproduction_score": 1,
+        "reproduction_label": "only a mention",
+        "reproduction_signals": {
+          "mention": true,
+          "steps": false,
+          "code_block": false,
+          "payload": false
+        },
+        "entry_point": null,
+        "candidates": [],
+        "clustered_with": [],
+        "duplicate_of": null,
+        "cluster": null
+      },
+      "reply": {
+        "en": "Hi,\n\nThank you for reporting \"URGENT: critical security vulnerability in your website\" to pastebox.\n\nWe could not find a file path in the report, so we cannot yet check it against the code. Could you reply with:\n\n- the file path, relative to the repository root, and the line number if you can;\n- where untrusted input enters, such as a request field, a file, or a command-line argument;\n- the version or commit you tested.\n\nThis is an initial triage, not a confirmation or a rejection of the issue.\n\n— The maintainers",
+        "zh": "你好，\n\n感谢你向 pastebox 报告「URGENT: critical security vulnerability in your website」。\n\n我们在报告中没有找到文件路径，因此暂时无法与代码对照。能否回复以下信息：\n\n- 文件路径（相对于仓库根目录），如有可能请附上行号；\n- 不可信输入从哪里进入，例如某个请求字段、某个文件或某个命令行参数；\n- 你测试的版本或提交。\n\n这只是初步分诊，既不是确认，也不是否定。\n\n—— 维护者"
+      },
+      "patch_note": null,
+      "patch_note_reason": "No patch note: the report gives no usable location in the repository."
+    },
+    {
+      "id": "06-link-regex-backtracking.json",
+      "format": "json",
+      "title": "Catastrophic backtracking in link detection",
+      "severity": "medium",
+      "cwe": [
+        "CWE-1333"
+      ],
+      "verdict": "needs human judgment",
+      "verdict_code": "needs_human_judgment",
+      "verdict_zh": "需要人工判断",
+      "reasons": [
+        {
+          "code": "snippet_mismatch",
+          "en": "`pastebox/render.py` exists, but the quoted code does not match it.",
+          "zh": "`pastebox/render.py` 存在，但引用的代码与它不一致。"
+        }
+      ],
+      "evidence": {
+        "path": "pastebox/render.py",
+        "path_exists": true,
+        "path_escapes_repo": false,
+        "line": 6,
+        "line_in_range": true,
+        "file_lines": 14,
+        "snippet_quoted": true,
+        "snippet_match": false,
+        "snippet_found_in": [],
+        "reproduction_score": 3,
+        "reproduction_label": "a code block plus steps or a payload",
+        "reproduction_signals": {
+          "mention": false,
+          "steps": true,
+          "code_block": true,
+          "payload": false
+        },
+        "entry_point": null,
+        "candidates": [
+          {
+            "path": "pastebox/render.py",
+            "line": 6,
+            "origin": "declared",
+            "escapes_repo": false,
+            "exists": true
+          }
+        ],
+        "clustered_with": [],
+        "duplicate_of": null,
+        "cluster": null
+      },
+      "reply": {
+        "en": "Hi,\n\nThank you for reporting \"Catastrophic backtracking in link detection\" to pastebox.\n\nOur initial triage could not settle this report automatically:\n\n- `pastebox/render.py` exists, but the quoted code does not match it.\n\nA maintainer will look at it by hand and may come back with questions. If you can tell us which version or commit you tested, that will help.\n\nThis is triage, not confirmation: we have not confirmed whether the issue is exploitable. Please keep the details private while we review it.\n\n— The maintainers",
+        "zh": "你好，\n\n感谢你向 pastebox 报告「Catastrophic backtracking in link detection」。\n\n初步分诊无法自动得出结论：\n\n- `pastebox/render.py` 存在，但引用的代码与它不一致。\n\n维护者会人工查看，之后可能会向你提问。如果你能告诉我们测试的版本或提交，会很有帮助。\n\n这是分诊，不是确认：我们尚未确认该问题是否可被利用。审查期间请不要公开细节。\n\n—— 维护者"
+      },
+      "patch_note": "Patch note (draft) for: Catastrophic backtracking in link detection\nReport: 06-link-regex-backtracking.json\n\n- Exploitability: not confirmed. This note comes from triage; confirm the issue by hand before changing code.\n- Where untrusted input enters: not stated in the report; establish it before writing a fix.\n- Path to fix: `pastebox/render.py` (line 6)\n- Weakness: CWE-1333 (as reported)\n- Open questions: `pastebox/render.py` exists, but the quoted code does not match it.\n- Release: publish the fix as a separate security release, not bundled with unrelated changes, and credit the reporter as agreed.",
+      "patch_note_reason": null
+    }
+  ],
+  "skipped": []
+}

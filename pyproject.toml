@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reportgate"
+dynamic = ["version"]
+description = "Local triage for incoming vulnerability reports: duplicates, reports that do not match the current code, missing reproductions, and ready-to-send replies. By Zitan Yu."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Zitan Yu" }]
+maintainers = [{ name = "Zitan Yu" }]
+requires-python = ">=3.10"
+dependencies = []
+keywords = ["security", "vulnerability", "triage", "maintainers", "open source", "disclosure"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+[project.urls]
+Homepage = "https://github.com/ZitanYu/reportgate"
+Documentation = "https://github.com/ZitanYu/reportgate#readme"
+Issues = "https://github.com/ZitanYu/reportgate/issues"
+Security = "https://github.com/ZitanYu/reportgate/security/policy"
+Changelog = "https://github.com/ZitanYu/reportgate/blob/main/CHANGELOG.md"
+
+[project.scripts]
+reportgate = "reportgate.cli:main"
+
+[tool.setuptools]
+packages = ["reportgate"]
+
+[tool.setuptools.dynamic]
+version = { attr = "reportgate._version.__version__" }
+
+[tool.ruff]
+# The formatter is locked to the exact version in requirements-dev.txt.
+line-length = 100
+target-version = "py310"
+extend-exclude = ["examples"]
+
+[tool.ruff.lint]
+select = ["E9", "F", "B"]

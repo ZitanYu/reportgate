@@ -1,0 +1,7 @@
+Possible denial of service in pastebox/server.py
+
+Hello,
+
+I think a very large paste could make the server use too much memory, since the
+whole request body is read at once in pastebox/server.py. I have not tried it, but
+it looks risky to me. Please take a look.

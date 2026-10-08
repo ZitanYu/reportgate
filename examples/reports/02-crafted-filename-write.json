@@ -1,0 +1,9 @@
+{
+  "title": "Arbitrary file write via crafted X-Filename",
+  "severity": "critical",
+  "cwe": "CWE-22",
+  "affected_files": ["pastebox/storage.py"],
+  "description": "Sending a paste with an X-Filename header such as ../owned.txt lets the client choose where the file lands on the server.",
+  "proof_of_concept": "save_upload('../owned.txt', b'hi')",
+  "suggested_fix": "Reject filenames that contain path separators, or keep only os.path.basename(filename)."
+}

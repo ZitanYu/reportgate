@@ -1,0 +1,7 @@
+{
+  "title": "Catastrophic backtracking in link detection",
+  "severity": "medium",
+  "cwe": ["CWE-1333"],
+  "files": ["pastebox/render.py"],
+  "body": "The link regex at pastebox/render.py line 6 has a nested quantifier, so a long line of non-space characters makes rendering take exponential time.\n\nVulnerable line:\n\n```python\nLINK_RE = re.compile(r\"(https?://\\S+)+$\")\n```\n\nSteps:\n\n1. Create a paste whose body is http:// followed by 50,000 letters and one trailing space.\n2. Request the paste page.\n3. The request does not complete."
+}
